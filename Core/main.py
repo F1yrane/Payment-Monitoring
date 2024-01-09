@@ -1,4 +1,6 @@
 import json
+import re
+
 from operator import itemgetter
 
 
@@ -29,3 +31,24 @@ def get_last_five_transactions(transactions_list):
     return last_five_transactions
 
 
+def get_date_of_transaction(transaction):
+    "Correct Date Display"""
+    date = transaction["date"][:10].replace("-", ".")
+    date = '.'.join(reversed(date.split('.')))
+    return date
+
+
+def masking_of_transfer_data(transaction):
+    """Hiding Data"""
+    nums = ''.join(re.findall(r'\d+', transaction))
+    name_of_card = ''.join(re.findall(r'\D+', transaction))
+
+    if nums[16:20]:
+        nums = nums.replace(nums[6:-4], '**********')
+        nums = ''.join([nums[14:20]])
+        return f'{name_of_card}{nums}'
+    else:
+        nums = nums.replace(nums[6:-4], '******')
+        nums = ' '.join([nums[:4], nums[4:8], nums[8:12], nums[12:16]])
+        return f'{name_of_card}{nums}'
+    
